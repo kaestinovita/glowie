@@ -1,50 +1,46 @@
-# Welcome to your Expo app 👋
+# Glowie Mobile App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+## 📌 Nama Produk
 
-## Get started
+**Glowie**
 
-1. Install dependencies
+---
 
-   ```bash
-   npm install
-   ```
+##  Deskripsi Produk
 
-2. Start the app
+Glowie adalah aplikasi mobile berbasis React Native yang menyediakan informasi kegiatan akhir pekan bertema kreatif dan feminin, seperti workshop merangkai bunga, dekorasi kue, meronce, hingga sesi DIY lainnya. Aplikasi ini membantu pengguna menemukan acara menarik dalam satu platform terorganisasi melalui daftar event dan tampilan peta interaktif.
 
-   ```bash
-   npx expo start
-   ```
+---
 
-In the output, you'll find options to open the app in a
+## 🛠️ Komponen Pembangun Produk
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+Berikut teknologi dan tools utama yang digunakan dalam pengembangan aplikasi Glowie:
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+* **React Native** → Framework untuk membuat aplikasi Android dan iOS dengan satu basis kode.
+* **Expo** → Platform pendukung yang mempermudah proses pengembangan dan testing aplikasi.
+* **TypeScript** → Bahasa yang digunakan untuk menulis kode agar lebih terstruktur dan minim error.
+* **Node.js & npm** → Digunakan untuk pengelolaan dependensi serta environment pengembangan.
+* **Firebase** → Backend untuk autentikasi pengguna dan penyimpanan data event.
 
-## Get a fresh project
+---
 
-When you're ready, run:
+## 🔍 Sumber Data
 
-```bash
-npm run reset-project
-```
+Data pada aplikasi berasal dari:
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+* Input pengguna melalui formulir aplikasi.
+* Database Firebase Realtime Database sebagai penyimpanan utama.
 
-## Learn more
+---
 
-To learn more about developing your project with Expo, look at the following resources:
+<h3>Tangkapan Layar Komponen Penting</h3>
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+<img src="https://github.com/user-attachments/assets/dd7369cf-be47-43d1-981a-e8bda7769b4e" width="250"/>
+<img src="https://github.com/user-attachments/assets/8520dfd3-e5c0-48f9-a347-fbce304f2b57" width="250"/>
+<img src="https://github.com/user-attachments/assets/d5c23672-d7e6-42f0-b4e7-d3e6a65e13af" width="250"/>
+<img src="https://github.com/user-attachments/assets/5c69fa1c-6d62-4328-89e9-df4ae649c4d6" width="250"/>
 
-## Join the community
 
-Join our community of developers creating universal apps.
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+
+
