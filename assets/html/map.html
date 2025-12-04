@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Peta Lokasi</title>
+  
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+  
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    
+    #map {
+      width: 100%;
+      height: 100vh;
+    }
+
+    /* Custom Marker Styles */
+    .custom-marker {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50% 50% 50% 0;
+      transform: rotate(-45deg);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      border: 3px solid white;
+    }
+
+    .marker-emoji {
+      transform: rotate(45deg);
+      font-size: 20px;
+    }
+
+    /* Popup Styles */
+    .leaflet-popup-content-wrapper {
+      border-radius: 16px;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .popup-content {
+      padding: 16px;
+      min-width: 200px;
+    }
+
+    .popup-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #f3f4f6;
+    }
+
+    .popup-emoji {
+      font-size: 28px;
+      margin-right: 10px;
+    }
+
+    .popup-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #111827;
+      flex: 1;
+    }
+
+    .popup-category {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 600;
+      color: white;
+      margin-bottom: 8px;
+    }
+
+    .popup-detail {
+      font-size: 13px;
+      color: #6b7280;
+      line-height: 1.5;
+      margin-bottom: 10px;
+    }
+
+    .popup-info {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .popup-badge {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 8px;
+      background: #f3f4f6;
+      border-radius: 6px;
+      font-size: 11px;
+      color: #374151;
+    }
+
+    .popup-badge-icon {
+      font-size: 10px;
+    }
+
+    .popup-price {
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-top: 8px;
+    }
+
+    .price-free {
+      background: #d1fae5;
+      color: #10b981;
+    }
+
+    .price-paid {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+
+  <!-- Leaflet JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  
+  <script>
+    // Initialize map centered on Yogyakarta
+    const map = L.map('map').setView([-7.797068, 110.370529], 13);
+
+    // Add OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors',
+      maxZoom: 19,
+    }).addTo(map);
+
+    // Store markers
+    let markers = [];
+    let markerLayer = L.layerGroup().addTo(map);
+
+    // Function to create custom marker icon
+    function createCustomIcon(color, emoji) {
+      return L.divIcon({
+        className: 'custom-div-icon',
+        html: `
+          <div class="custom-marker" style="background-color: ${color};">
+            <span class="marker-emoji">${emoji}</span>
+          </div>
+        `,
+        iconSize: [40, 40],
+        iconAnchor: [20, 40],
+        popupAnchor: [0, -40],
+      });
+    }
+
+    // Function to create popup content
+    function createPopupContent(location) {
+      let priceHtml = '';
+      if (location.isFree) {
+        priceHtml = '<div class="popup-price price-free">🎉 GRATIS</div>';
+      } else if (location.price && location.price !== '0') {
+        priceHtml = `<div class="popup-price price-paid">💰 Rp ${location.price}</div>`;
+      }
+
+      let infoHtml = '';
+      if (location.date || location.time) {
+        infoHtml = '<div class="popup-info">';
+        if (location.date) {
+          infoHtml += `<div class="popup-badge">
+            <span class="popup-badge-icon">📅</span>
+            <span>${location.date}</span>
+          </div>`;
+        }
+        if (location.time) {
+          infoHtml += `<div class="popup-badge">
+            <span class="popup-badge-icon">⏰</span>
+            <span>${location.time}</span>
+          </div>`;
+        }
+        infoHtml += '</div>';
+      }
+
+      return `
+        <div class="popup-content">
+          <div class="popup-header">
+            <span class="popup-emoji">${location.emoji}</span>
+            <span class="popup-title">${location.name}</span>
+          </div>
+          <div class="popup-category" style="background-color: ${location.color};">
+            ${location.category}
+          </div>
+          ${location.detail ? `<div class="popup-detail">${location.detail}</div>` : ''}
+          ${infoHtml}
+          ${priceHtml}
+        </div>
+      `;
+    }
+
+    // Function to update markers on map
+    window.updateMarkers = function(locations) {
+      // Clear existing markers
+      markerLayer.clearLayers();
+      markers = [];
+
+      if (!locations || locations.length === 0) {
+        return;
+      }
+
+      // Add new markers
+      locations.forEach(location => {
+        if (location.lat && location.lng) {
+          const customIcon = createCustomIcon(location.color, location.emoji);
+          
+          const marker = L.marker([location.lat, location.lng], {
+            icon: customIcon
+          });
+
+          const popupContent = createPopupContent(location);
+          marker.bindPopup(popupContent, {
+            maxWidth: 300,
+            className: 'custom-popup'
+          });
+
+          marker.addTo(markerLayer);
+          markers.push(marker);
+        }
+      });
+
+      // Auto fit bounds if markers exist
+      if (markers.length > 0) {
+        const group = L.featureGroup(markers);
+        map.fitBounds(group.getBounds().pad(0.1));
+      }
+    };
+
+    // Check for pending markers from React Native
+    if (window.pendingMarkers) {
+      updateMarkers(window.pendingMarkers);
+      delete window.pendingMarkers;
+    }
+
+    // Send ready message to React Native
+    if (window.ReactNativeWebView) {
+      window.ReactNativeWebView.postMessage(JSON.stringify({
+        type: 'MAP_READY'
+      }));
+    }
+  </script>
+</body>
+</html>
